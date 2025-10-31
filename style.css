@@ -1,6 +1,7 @@
 body{
       padding: 0px;
       margin: 0px;
+      background-color: #000000;
 }
 
 main{
@@ -8,9 +9,14 @@ main{
       margin: 0px;
      display: flex;
      justify-content: space-around;
-    
      text-align: center;
-     background-color: #000000ea;
+     background: url('./image/21621.jpg') bottom center fixed;
+     background-size: 110%;
+     background-position: left 70px bottom 0px;
+
+     
+   
+     background-repeat: no-repeat;
 }
 
 main img{
@@ -22,10 +28,11 @@ main img{
       padding-top: 110px;
 }
 #scor-div div{
-       background-color: #80748714;
+       background-color: #4b444f27;
        padding: 12px;
        padding-bottom: 63px;
        border-radius: 90px;
+       box-shadow: 0px 0px 32px rgba(194, 179, 197, 0.269);
 }
 
 #p1{
