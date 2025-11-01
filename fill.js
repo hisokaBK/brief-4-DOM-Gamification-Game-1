@@ -23,8 +23,41 @@ window.onload = () => {
     let flipCount = 0;
     let matchedCount = 0;
 
+    // create victory modal
+    const modal = document.createElement("div");
+    modal.id = "victory-modal";
+    modal.classList.add("modal", "hidden");
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2> Bravo !</h2>
+            <p>Score: <span id="modal-score">0</span></p>
+            <p>Flips: <span id="modal-flips">0</span></p>
+            <button id="modal-close">Fermer</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalScore = modal.querySelector("#modal-score");
+    const modalFlips = modal.querySelector("#modal-flips");
+    const modalClose = modal.querySelector("#modal-close");
+
+    modalClose.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        cards.forEach((card) => {
+            card.querySelector("img").src = flipBack;
+            card.style.transform = "rotateY(0deg)";
+            card.classList.remove("matched");
+        });
+        score = 0;
+        flipCount = 0;
+        matchedCount = 0;
+        updateScore();
+        randCrats();
+
+    });
+
     // shuffle cards in the DOM
-    shuffleCards();
+    randCrats();
 
     // add click event
     cards.forEach((card) => {
@@ -36,10 +69,8 @@ window.onload = () => {
         if (card === firstCard) return;
         if (card.classList.contains("matched")) return;
 
-        // show image
         const key = card.dataset.img;
-        card.querySelector("img").src = imgMap[key] || flipBack;
-
+        card.querySelector("img").src = imgMap[key];
         card.style.transform = "rotateY(180deg)";
         card.style.transition = "transform 0.35s";
 
@@ -47,18 +78,15 @@ window.onload = () => {
 
         if (!firstCard) {
             firstCard = card;
-            return;
+        } else {
+            secondCard = card;
+            lockBoard = true;
+            checkMatch();
         }
-
-        secondCard = card;
-        lockBoard = true;
-
-        checkMatch();
     }
 
     function checkMatch() {
         if (firstCard.dataset.img === secondCard.dataset.img) {
-            // matched
             firstCard.classList.add("matched");
             secondCard.classList.add("matched");
             score += 50;
@@ -67,13 +95,10 @@ window.onload = () => {
             resetBoard();
 
             if (matchedCount === cards.length) {
-                setTimeout(() => {
-                    alert(`🎉 Bravo ! Tu as gagné !\nScore: ${score}\nFlips: ${flipCount}`);
-                }, 400);
+                showModal();
             }
         } else {
-            // not matched
-            score = Math.max(0, score - 5);
+            if (score > 0) score -= 5;
             updateScore();
             setTimeout(() => {
                 firstCard.querySelector("img").src = flipBack;
@@ -86,7 +111,8 @@ window.onload = () => {
     }
 
     function resetBoard() {
-        [firstCard, secondCard] = [null, null];
+        firstCard = null;
+        secondCard = null;
         lockBoard = false;
     }
 
@@ -94,33 +120,35 @@ window.onload = () => {
         scoreSpan.textContent = score;
     }
 
-    // replay button
     replayBtn.addEventListener("click", () => {
         cards.forEach((card) => {
             card.querySelector("img").src = flipBack;
             card.style.transform = "rotateY(0deg)";
             card.classList.remove("matched");
         });
-        
         score = 0;
         flipCount = 0;
         matchedCount = 0;
         updateScore();
-        shuffleCards();
+        randCrats();
     });
 
-    function shuffleCards() {
+    function randCrats() {
         const container = document.querySelector(".carts");
         const nodes = Array.from(container.children);
         for (let i = nodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             container.appendChild(nodes[j]);
-            nodes.splice(j, 1);
         }
-        // ensure all cards back
         cards.forEach((card) => {
             card.querySelector("img").src = flipBack;
             card.style.transform = "rotateY(0deg)";
         });
+    }
+
+    function showModal() {
+        modalScore.textContent = score;
+        modalFlips.textContent = flipCount;
+        modal.classList.remove("hidden");
     }
 };
