@@ -38,5 +38,5 @@ Cliquer sur des cartes pour les retourner et retrouver toutes les paires corresp
 ## 🚀 Installation
 1. Cloner le projet :
    ```bash
-   git clone https://github.com/your-username/memory-game.git
+  git clone https://github.com/your-username/memory-game.git
    cd memory-game
